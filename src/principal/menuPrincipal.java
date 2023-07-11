@@ -6,13 +6,25 @@ import conexionSQL.ConexionDB;
 import entidades.TbServicios;
 import entidades.tbClientes;
 import entidades.tbTipoPago;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import listados.listadoClientes;
 import java.sql.ResultSet;
+import java.text.ParseException;
 import javax.swing.JOptionPane;
 import listados.listadoServicios;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.Timer;
 import listados.listadoTipoPago;
 
 /**
@@ -28,10 +40,8 @@ public class menuPrincipal extends javax.swing.JFrame {
     listadoServicios sumaDeServicios = new listadoServicios();
     String numeroAut = "000000126";
     String numeroNota = "0958159626001";
-    double totalpaga = 0;
-    double subtotalServicios = 0;
     double adicionalIva = 0;
-    double TarifaIva = 0.12;
+    public static Long valorSemilla;
 
     /**
      * Creates new form menuPrincipal
@@ -62,14 +72,16 @@ public class menuPrincipal extends javax.swing.JFrame {
         this.notasDeVenta.setVisible(false);
         this.clientes.setVisible(false);
         this.sorteos.setVisible(false);
-        cargarComboClientes();
+        this.servicios.setVisible(false);
         cargarComboServicios();
         cargarComboTipoPago();
         JListadoServicios.clearSelection();
         comboBoxClientesReserv.setSelectedIndex(-1);
         tipoPago.setSelectedIndex(-1);
-        JListadoServiciosNotadeVenta.clearSelection();
         comboBoxClientesNotaVenta.setSelectedIndex(-1);
+        tarifaCombo.setSelectedIndex(-1);
+        comboBoxClientesNotaVenta.setSelectedIndex(-1);
+
         subtotal.setText("");
         subtotal.setText("");
         total.setText("");
@@ -90,6 +102,7 @@ public class menuPrincipal extends javax.swing.JFrame {
 
         iniHourPopUp = new com.raven.swing.TimePicker();
         finalHourPopUp = new com.raven.swing.TimePicker();
+        jMenuItem2 = new javax.swing.JMenuItem();
         panelinicial = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         notasDeVenta = new javax.swing.JPanel();
@@ -108,13 +121,13 @@ public class menuPrincipal extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         JListadoServiciosNotadeVenta = new javax.swing.JList<>();
         jLabel31 = new javax.swing.JLabel();
-        iva = new javax.swing.JTextField();
         total = new javax.swing.JTextField();
         subtotal = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
         jLabel33 = new javax.swing.JLabel();
         cancelarNotaVenta = new javax.swing.JButton();
         guardarNotaVenta = new javax.swing.JButton();
+        tarifaCombo = new javax.swing.JComboBox<>();
         background = new javax.swing.JLabel();
         reservas = new javax.swing.JPanel();
         fechaReserva = new com.toedter.calendar.JDateChooser();
@@ -136,30 +149,39 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         sorteos = new javax.swing.JPanel();
         jLabel28 = new javax.swing.JLabel();
-        fechaReserva1 = new com.toedter.calendar.JDateChooser();
-        jTextField5 = new javax.swing.JTextField();
+        fechaex = new com.toedter.calendar.JDateChooser();
+        ganadorField = new javax.swing.JTextField();
         jLabel39 = new javax.swing.JLabel();
         jLabel38 = new javax.swing.JLabel();
         cancelarNotaVenta1 = new javax.swing.JButton();
-        guardarNotaVenta1 = new javax.swing.JButton();
+        generarGanador = new javax.swing.JButton();
         generarRandom = new javax.swing.JButton();
         fondosorteos = new javax.swing.JLabel();
-        guardarNotaVenta2 = new javax.swing.JButton();
         clientes = new javax.swing.JPanel();
         jLabel27 = new javax.swing.JLabel();
         jLabel34 = new javax.swing.JLabel();
         jLabel35 = new javax.swing.JLabel();
         jLabel36 = new javax.swing.JLabel();
         jLabel37 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        identificacion = new javax.swing.JTextField();
+        correo = new javax.swing.JTextField();
+        telefono = new javax.swing.JTextField();
+        nombreCompleto = new javax.swing.JTextField();
         guardacliente = new javax.swing.JButton();
         cancelarCliente = new javax.swing.JButton();
         fondoclientes = new javax.swing.JLabel();
+        servicios = new javax.swing.JPanel();
+        jLabel40 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
+        jLabel44 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        costoServ = new javax.swing.JTextField();
+        servicioNamefield = new javax.swing.JTextField();
+        guardaserv = new javax.swing.JButton();
+        cancelarserv = new javax.swing.JButton();
+        backgroundServ = new javax.swing.JLabel();
         jMenuBar2 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuPrinci = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         reservasMenu = new javax.swing.JMenu();
         reservasItem = new javax.swing.JMenuItem();
@@ -169,12 +191,16 @@ public class menuPrincipal extends javax.swing.JFrame {
         sorteosItem = new javax.swing.JMenuItem();
         clientesMenu = new javax.swing.JMenu();
         clientesItem = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        menuServicios = new javax.swing.JMenuItem();
 
         iniHourPopUp.setForeground(new java.awt.Color(58, 26, 100));
         iniHourPopUp.setDisplayText(horaIni);
 
         finalHourPopUp.setForeground(new java.awt.Color(58, 26, 100));
         finalHourPopUp.setDisplayText(horaFin);
+
+        jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -185,7 +211,7 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 51, 102));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/fondo1.png"))); // NOI18N
         jLabel1.setPreferredSize(null);
-        panelinicial.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 460));
+        panelinicial.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 470));
 
         getContentPane().add(panelinicial, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 420));
 
@@ -254,10 +280,6 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel31.setText("Servicios");
         notasDeVenta.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 200, -1, -1));
 
-        iva.setEditable(false);
-        iva.setBackground(new java.awt.Color(224, 224, 255));
-        notasDeVenta.add(iva, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 270, 280, 30));
-
         total.setEditable(false);
         total.setBackground(new java.awt.Color(224, 224, 255));
         notasDeVenta.add(total, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 320, 280, 30));
@@ -302,6 +324,14 @@ public class menuPrincipal extends javax.swing.JFrame {
         });
         notasDeVenta.add(guardarNotaVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 370, 120, 40));
 
+        tarifaCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0%", "12%" }));
+        tarifaCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tarifaComboActionPerformed(evt);
+            }
+        });
+        notasDeVenta.add(tarifaCombo, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 270, 280, 30));
+
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/fondonotadeventa.png"))); // NOI18N
         background.setText("nota de venta");
         notasDeVenta.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(-60, -70, -1, -1));
@@ -338,7 +368,6 @@ public class menuPrincipal extends javax.swing.JFrame {
         seleccionarHoraFinal.setForeground(new java.awt.Color(255, 255, 255));
         seleccionarHoraFinal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/hora.png"))); // NOI18N
         seleccionarHoraFinal.setToolTipText("");
-        seleccionarHoraFinal.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         seleccionarHoraFinal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 seleccionarHoraFinalActionPerformed(evt);
@@ -351,7 +380,6 @@ public class menuPrincipal extends javax.swing.JFrame {
         seleccionarHoraInicial1.setForeground(new java.awt.Color(255, 255, 255));
         seleccionarHoraInicial1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/hora.png"))); // NOI18N
         seleccionarHoraInicial1.setToolTipText("");
-        seleccionarHoraInicial1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         seleccionarHoraInicial1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 seleccionarHoraInicial1ActionPerformed(evt);
@@ -390,6 +418,8 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel20.setText("Hora inicial de reserva");
         reservas.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
 
+        horaIni.setEditable(false);
+        horaIni.setBackground(new java.awt.Color(229, 229, 255));
         horaIni.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 horaIniActionPerformed(evt);
@@ -397,6 +427,8 @@ public class menuPrincipal extends javax.swing.JFrame {
         });
         reservas.add(horaIni, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, 260, 40));
 
+        horaFin.setEditable(false);
+        horaFin.setBackground(new java.awt.Color(229, 229, 255));
         horaFin.setForeground(new java.awt.Color(102, 102, 102));
         horaFin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -431,24 +463,32 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel28.setBackground(new java.awt.Color(255, 255, 255));
         jLabel28.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel28.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel28.setText("Sorteos");
-        sorteos.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, -1, -1));
-        sorteos.add(fechaReserva1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, 540, 40));
-        sorteos.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, 370, 70));
+        jLabel28.setText("Sorteos del establecimiento");
+        sorteos.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, -1, -1));
+        sorteos.add(fechaex, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 200, 510, 40));
+
+        ganadorField.setEditable(false);
+        ganadorField.setBackground(new java.awt.Color(244, 244, 255));
+        ganadorField.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        ganadorField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ganadorFieldActionPerformed(evt);
+            }
+        });
+        sorteos.add(ganadorField, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, 340, 70));
 
         jLabel39.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel39.setForeground(new java.awt.Color(255, 255, 255));
         jLabel39.setText("Fecha de expiración");
-        sorteos.add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 170, -1, -1));
+        sorteos.add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, -1, -1));
 
         jLabel38.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel38.setForeground(new java.awt.Color(255, 255, 255));
         jLabel38.setText("Clientes participantes");
-        sorteos.add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, -1, -1));
+        sorteos.add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 80, -1, -1));
 
-        cancelarNotaVenta1.setBackground(new java.awt.Color(102, 102, 102));
         cancelarNotaVenta1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cancelarNotaVenta1.setForeground(new java.awt.Color(255, 255, 255));
+        cancelarNotaVenta1.setForeground(new java.awt.Color(102, 102, 102));
         cancelarNotaVenta1.setText("Cancelar");
         cancelarNotaVenta1.setToolTipText("");
         cancelarNotaVenta1.setActionCommand("");
@@ -457,24 +497,23 @@ public class menuPrincipal extends javax.swing.JFrame {
                 cancelarNotaVenta1ActionPerformed(evt);
             }
         });
-        sorteos.add(cancelarNotaVenta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 270, 140, 40));
+        sorteos.add(cancelarNotaVenta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 300, 140, 40));
 
-        guardarNotaVenta1.setBackground(new java.awt.Color(47, 4, 133));
-        guardarNotaVenta1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        guardarNotaVenta1.setForeground(new java.awt.Color(255, 255, 255));
-        guardarNotaVenta1.setText("Generar ganador");
-        guardarNotaVenta1.setToolTipText("");
-        guardarNotaVenta1.setActionCommand("");
-        guardarNotaVenta1.addActionListener(new java.awt.event.ActionListener() {
+        generarGanador.setBackground(new java.awt.Color(47, 4, 133));
+        generarGanador.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        generarGanador.setForeground(new java.awt.Color(255, 255, 255));
+        generarGanador.setText("Generar ganador");
+        generarGanador.setToolTipText("");
+        generarGanador.setActionCommand("");
+        generarGanador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                guardarNotaVenta1ActionPerformed(evt);
+                generarGanadorActionPerformed(evt);
             }
         });
-        sorteos.add(guardarNotaVenta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 90, 150, 70));
+        sorteos.add(generarGanador, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 100, 150, 70));
 
-        generarRandom.setBackground(new java.awt.Color(112, 43, 248));
         generarRandom.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        generarRandom.setForeground(new java.awt.Color(255, 255, 255));
+        generarRandom.setForeground(new java.awt.Color(112, 43, 248));
         generarRandom.setText("Guardar");
         generarRandom.setToolTipText("");
         generarRandom.setActionCommand("");
@@ -483,23 +522,10 @@ public class menuPrincipal extends javax.swing.JFrame {
                 generarRandomActionPerformed(evt);
             }
         });
-        sorteos.add(generarRandom, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 270, 140, 40));
+        sorteos.add(generarRandom, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 300, 140, 40));
 
-        fondosorteos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/clientes.png"))); // NOI18N
-        sorteos.add(fondosorteos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 710, 440));
-
-        guardarNotaVenta2.setBackground(new java.awt.Color(112, 43, 248));
-        guardarNotaVenta2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        guardarNotaVenta2.setForeground(new java.awt.Color(255, 255, 255));
-        guardarNotaVenta2.setText("Guardar");
-        guardarNotaVenta2.setToolTipText("");
-        guardarNotaVenta2.setActionCommand("");
-        guardarNotaVenta2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                guardarNotaVenta2ActionPerformed(evt);
-            }
-        });
-        sorteos.add(guardarNotaVenta2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 280, 290, 40));
+        fondosorteos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/sorteo.png"))); // NOI18N
+        sorteos.add(fondosorteos, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, -10, 840, 420));
 
         getContentPane().add(sorteos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 420));
 
@@ -509,41 +535,40 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel27.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel27.setForeground(new java.awt.Color(255, 255, 255));
         jLabel27.setText("Ingreso de clientes");
-        clientes.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, -1, -1));
+        clientes.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, -1, -1));
 
         jLabel34.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel34.setForeground(new java.awt.Color(255, 255, 255));
         jLabel34.setText("Itentificación");
-        clientes.add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 170, -1, -1));
+        clientes.add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 190, -1, -1));
 
         jLabel35.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel35.setForeground(new java.awt.Color(255, 255, 255));
         jLabel35.setText("Correo eléctronico");
-        clientes.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 170, -1, -1));
+        clientes.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 190, -1, -1));
 
         jLabel36.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel36.setForeground(new java.awt.Color(255, 255, 255));
         jLabel36.setText("Teléfono");
-        clientes.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 170, -1, -1));
+        clientes.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 190, -1, -1));
 
         jLabel37.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel37.setForeground(new java.awt.Color(255, 255, 255));
         jLabel37.setText("Nombre completo");
-        clientes.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 80, -1, -1));
+        clientes.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, -1, -1));
+        clientes.add(identificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 170, 40));
 
-        jTextField2.setText("jTextField1");
-        clientes.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, 170, 40));
+        correo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                correoActionPerformed(evt);
+            }
+        });
+        clientes.add(correo, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 210, 170, 40));
+        clientes.add(telefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 210, 180, 40));
+        clientes.add(nombreCompleto, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 540, 40));
 
-        jTextField3.setText("jTextField1");
-        clientes.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 190, 170, 40));
-
-        jTextField1.setText("jTextField1");
-        clientes.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 190, 180, 40));
-        clientes.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 540, 40));
-
-        guardacliente.setBackground(new java.awt.Color(112, 43, 248));
         guardacliente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        guardacliente.setForeground(new java.awt.Color(255, 255, 255));
+        guardacliente.setForeground(new java.awt.Color(74, 6, 207));
         guardacliente.setText("Guardar");
         guardacliente.setToolTipText("");
         guardacliente.setActionCommand("");
@@ -552,11 +577,10 @@ public class menuPrincipal extends javax.swing.JFrame {
                 guardaclienteActionPerformed(evt);
             }
         });
-        clientes.add(guardacliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 280, 120, 40));
+        clientes.add(guardacliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 350, 120, 40));
 
-        cancelarCliente.setBackground(new java.awt.Color(102, 102, 102));
         cancelarCliente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cancelarCliente.setForeground(new java.awt.Color(255, 255, 255));
+        cancelarCliente.setForeground(new java.awt.Color(102, 102, 102));
         cancelarCliente.setText("Cancelar");
         cancelarCliente.setToolTipText("");
         cancelarCliente.setActionCommand("");
@@ -565,16 +589,72 @@ public class menuPrincipal extends javax.swing.JFrame {
                 cancelarClienteActionPerformed(evt);
             }
         });
-        clientes.add(cancelarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 280, 120, 40));
+        clientes.add(cancelarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 350, 120, 40));
 
-        fondoclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/clientes.png"))); // NOI18N
-        clientes.add(fondoclientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -20, 710, 440));
+        fondoclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/sorteo.png"))); // NOI18N
+        clientes.add(fondoclientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 420));
 
         getContentPane().add(clientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 420));
 
-        jMenu1.setForeground(new java.awt.Color(112, 43, 248));
-        jMenu1.setText("Menú principal");
-        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        servicios.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel40.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel40.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel40.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel40.setText("Ingreso de servicios");
+        servicios.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 50, -1, -1));
+
+        jLabel41.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel41.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel41.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel41.setText("Servicios");
+        servicios.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, -1, -1));
+
+        jLabel44.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel44.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel44.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel44.setText("Costo servicios");
+        servicios.add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 120, -1, -1));
+
+        jLabel43.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel43.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel43.setForeground(new java.awt.Color(255, 255, 255));
+        servicios.add(jLabel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 110, -1, -1));
+        servicios.add(costoServ, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 140, 260, 40));
+        servicios.add(servicioNamefield, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 260, 40));
+
+        guardaserv.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        guardaserv.setForeground(new java.awt.Color(74, 6, 207));
+        guardaserv.setText("Guardar");
+        guardaserv.setToolTipText("");
+        guardaserv.setActionCommand("");
+        guardaserv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guardaservActionPerformed(evt);
+            }
+        });
+        servicios.add(guardaserv, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 240, 120, 40));
+
+        cancelarserv.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cancelarserv.setForeground(new java.awt.Color(102, 102, 102));
+        cancelarserv.setText("Cancelar");
+        cancelarserv.setToolTipText("");
+        cancelarserv.setActionCommand("");
+        cancelarserv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarservActionPerformed(evt);
+            }
+        });
+        servicios.add(cancelarserv, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 120, 40));
+
+        backgroundServ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/sorteo.png"))); // NOI18N
+        servicios.add(backgroundServ, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        getContentPane().add(servicios, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 420));
+
+        menuPrinci.setForeground(new java.awt.Color(112, 43, 248));
+        menuPrinci.setText("Menú principal");
+        menuPrinci.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jMenuItem1.setForeground(new java.awt.Color(204, 0, 102));
         jMenuItem1.setText("Ir al menú");
@@ -583,9 +663,9 @@ public class menuPrincipal extends javax.swing.JFrame {
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        menuPrinci.add(jMenuItem1);
 
-        jMenuBar2.add(jMenu1);
+        jMenuBar2.add(menuPrinci);
 
         reservasMenu.setForeground(new java.awt.Color(112, 43, 248));
         reservasMenu.setText("Reservas");
@@ -652,6 +732,21 @@ public class menuPrincipal extends javax.swing.JFrame {
 
         jMenuBar2.add(clientesMenu);
 
+        jMenu2.setBackground(new java.awt.Color(102, 0, 204));
+        jMenu2.setText("Servicios");
+        jMenu2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        menuServicios.setForeground(new java.awt.Color(255, 0, 153));
+        menuServicios.setText("Agregar servicios");
+        menuServicios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuServiciosActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuServicios);
+
+        jMenuBar2.add(jMenu2);
+
         setJMenuBar(jMenuBar2);
 
         pack();
@@ -667,6 +762,9 @@ public class menuPrincipal extends javax.swing.JFrame {
         this.notasDeVenta.setVisible(false);
         this.clientes.setVisible(false);
         this.sorteos.setVisible(true);
+        this.servicios.setVisible(false);
+        fechaex.setDate(null);
+        ganadorField.setText("");
     }//GEN-LAST:event_sorteosItemActionPerformed
 
     private void reservasItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reservasItemActionPerformed
@@ -675,6 +773,9 @@ public class menuPrincipal extends javax.swing.JFrame {
         this.notasDeVenta.setVisible(false);
         this.clientes.setVisible(false);
         this.sorteos.setVisible(false);
+        this.servicios.setVisible(false);
+        cargarComboServicios();
+        cargarComboClientes();
     }//GEN-LAST:event_reservasItemActionPerformed
 
     private void notaDeVentaItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notaDeVentaItemActionPerformed
@@ -683,12 +784,18 @@ public class menuPrincipal extends javax.swing.JFrame {
         this.notasDeVenta.setVisible(true);
         this.clientes.setVisible(false);
         this.sorteos.setVisible(false);
+        this.servicios.setVisible(false);
+        cargarComboServicios();
+        cargarComboClientes();
     }//GEN-LAST:event_notaDeVentaItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         this.panelinicial.setVisible(true);
         this.reservas.setVisible(false);
         this.notasDeVenta.setVisible(false);
+        this.clientes.setVisible(false);
+        this.sorteos.setVisible(false);
+        this.servicios.setVisible(false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void horaFinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horaFinActionPerformed
@@ -705,7 +812,7 @@ public class menuPrincipal extends javax.swing.JFrame {
         this.notasDeVenta.setVisible(false);
         this.clientes.setVisible(false);
         this.sorteos.setVisible(false);
-
+        this.servicios.setVisible(false);
         JListadoServicios.clearSelection();
         comboBoxClientesReserv.setSelectedIndex(-1);
         fechaReserva.setDate(null);
@@ -713,35 +820,47 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelarReservaActionPerformed
 
     private void guardarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarReservaActionPerformed
-        /*TODO
-        0. Validar Formulario
-        1. guardar la informacion de la cabecera.
-        2. Obtener el id de ese registro recien creado
-        3. Guardar la informacion del detalle.
-         */
- /*Validciones de formulario*/
         Date fechaActual = new Date();
-        java.util.Date fechaReservacionUtil = fechaReserva.getDate();
-        java.sql.Date fechaReservacionSql = new java.sql.Date(fechaReservacionUtil.getTime());
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("YYYY-MM-dd");
-        String fechaFormateada = formatoFecha.format(fechaActual);
-        System.out.println(fechaFormateada + " fecha vacia");
-        if ((comboBoxClientesReserv.getSelectedIndex() < 0) && (JListadoServicios.getSelectedIndices().length <= 0) && fechaFormateada == null) {
+        Date fechaSelecc = fechaReserva.getDate();
+
+        int resultadocomparacion = fechaActual.compareTo(fechaSelecc);
+        /*Validciones de formulario*/
+        int listadoJtext = comboBoxClientesReserv.getSelectedIndex();
+        Date fechaReservacion = fechaReserva.getDate();
+        int[] serviciosSeleccionados = JListadoServicios.getSelectedIndices();
+        java.sql.Date fechaReservacionSql = new java.sql.Date(fechaReservacion.getDate());
+        // Formatear el objeto LocalTime utilizando el formatter de salida
+        if ((listadoJtext == -1) && (serviciosSeleccionados.length == 0) && (fechaReservacion == null)) {
+
             JOptionPane.showMessageDialog(null, "Debe ingresar todos los campos del formulario.", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
             return;
-        } else if (comboBoxClientesReserv.getSelectedIndex() < 0) {
+        } else if (resultadocomparacion > 0) {
+            JOptionPane.showMessageDialog(null, "La fecha final no debe ser menor o igual que la fehca actual", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (listadoJtext == -1) {
             JOptionPane.showMessageDialog(null, "Debe ingresar el nombre del cliente", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
             return;
-        } else if (JListadoServicios.getSelectedIndices().length <= 0) {
+        } else if (serviciosSeleccionados.length == 0) {
             JOptionPane.showMessageDialog(null, "Debe ingresar el/los servicios para la reserva", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
             return;
-        } else if (java.sql.Date.valueOf(fechaFormateada) == null) {
+        } else if (fechaReservacion == null) {
             JOptionPane.showMessageDialog(null, "Debe ingresar fecha de reservación.", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
             return;
-        } else if (fechaReservacionSql.compareTo(java.sql.Date.valueOf(fechaFormateada)) < 0) {
-            JOptionPane.showMessageDialog(null, "La fecha de reservación debe ser mayor o igual a la fecha actual.", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+        }
+        // Obtener la fecha actual
+        String horaInicial = iniHourPopUp.getSelectedTime();
+        String horaFinal = finalHourPopUp.getSelectedTime();
+        DateTimeFormatter formatoAmPm = DateTimeFormatter.ofPattern("hh:mm a", Locale.US);
+//        DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm:ss", Locale.forLanguageTag("es-ES"));
+
+        LocalTime horaInicialLocalTime = LocalTime.parse(horaInicial, formatoAmPm);
+        LocalTime horaFinalLocalTime = LocalTime.parse(horaFinal, formatoAmPm);
+
+        if (horaFinalLocalTime.isBefore(horaInicialLocalTime)) {
+            JOptionPane.showMessageDialog(null, "Hora final no debe ser menor que hora inicial", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         /*fin Validciones de formulario*/
         String queryDB = "Insert into tb_reservas (fecha_reserva,fk_id_cliente,hora_inicio,hora_fin) "
                 + "values (?,?,?,?);";
@@ -771,10 +890,10 @@ public class menuPrincipal extends javax.swing.JFrame {
             System.out.println("Cabecera insertada con exito" + " Fecha: " + fechaReservacionSql);
         } catch (Exception e) {
             System.out.println("Cabecera no pudo ser insertada" + e);
+            return;
         }
 
-        System.out.println(JListadoServicios.getSelectedIndices());
-
+        // System.out.println(JListadoServicios.getSelectedIndices());
         String queryServicios = "Insert into tb_reservasDetalle (fk_id_servicio,fk_id_reservas) "
                 + " values (?,?);";
 
@@ -782,18 +901,22 @@ public class menuPrincipal extends javax.swing.JFrame {
 
             for (int i = 0; i < JListadoServicios.getSelectedIndices().length; i++) {
                 TbServicios obtenerServiciosByPosicion = listadoS.obtenerServiciosByPosicion(JListadoServicios.getSelectedIndices()[i]);
-                ps.setLong(1, idCabeceraReservacion);
-                ps.setLong(2, obtenerServiciosByPosicion.getIdServicios());
+                ps.setLong(1, obtenerServiciosByPosicion.getIdServicios());
+                ps.setLong(2, idCabeceraReservacion);
                 ps.execute();
             }
 
-            JListadoServicios.clearSelection();
-            comboBoxClientesReserv.setSelectedIndex(-1);
-            fechaReserva.setDate(null);
-
-            JOptionPane.showMessageDialog(null, "Reserva guardada exitosamente.", "Proceso exitoso", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Insercion de detalle exitoso");
+            Object[] options = {"OK"};
+            int result = JOptionPane.showOptionDialog(null, "Reserva guardada con éxito", "Proceso exitoso", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            if (result == JOptionPane.OK_OPTION) {
+                JListadoServicios.clearSelection();
+                comboBoxClientesReserv.setSelectedIndex(-1);
+                fechaReserva.setDate(null);
+            }
+
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Lo sentimos, tuvimos problemas con el proceso", "Proceso Fallido", JOptionPane.ERROR_MESSAGE);
             System.err.println("Error registrando detalle: " + e);
         }
 
@@ -831,19 +954,44 @@ public class menuPrincipal extends javax.swing.JFrame {
         Date fechaActual = new Date();
         java.util.Date fechaReservacionUtil = fechaActual;
         java.sql.Date fechaReservacionSql = new java.sql.Date(fechaReservacionUtil.getTime());
-
-        for (int i = 0; i < JListadoServiciosNotadeVenta.getSelectedIndices().length; i++) {
-            TbServicios obtenerServiciosByPosicion = listadoS.obtenerServiciosByPosicion(JListadoServiciosNotadeVenta.getSelectedIndices()[i]);
-            this.subtotalServicios += obtenerServiciosByPosicion.getCosto_servicio();
-            System.out.println("subtotal de todos los servicios: " + this.subtotalServicios);
+        double subtotalServicios = 0;
+        double totalpaga = 0;
+        double TarifaIva = 0;
+        System.out.println("opciones de combo:  " + tarifaCombo.getSelectedItem());
+        if ((tarifaCombo.getSelectedIndex() == -1) && (comboBoxClientesNotaVenta.getSelectedIndex() == -1) && (tipoPago.getSelectedIndex() == -1) && JListadoServiciosNotadeVenta.getSelectedIndices().length == 0) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar todos los datos", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (tarifaCombo.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una tarifa", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (comboBoxClientesNotaVenta.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un cliente", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (tipoPago.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un tipo de pago", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (JListadoServiciosNotadeVenta.getSelectedIndices().length == 0) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un servicio", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        this.adicionalIva = this.subtotalServicios * this.TarifaIva;
-        this.totalpaga = this.subtotalServicios + adicionalIva;
+        if (tarifaCombo.getSelectedItem() == "0%") {
+            TarifaIva = 0;
+        } else {
+            TarifaIva = 0.12;
+        }
+        for (int i = 0; i < JListadoServiciosNotadeVenta.getSelectedIndices().length; i++) {
+            TbServicios obtenerServiciosByPosicion = listadoS.obtenerServiciosByPosicion(JListadoServiciosNotadeVenta.getSelectedIndices()[i]);
+            subtotalServicios += obtenerServiciosByPosicion.getCosto_servicio();
+            System.out.println("subtotal de todos los servicios: " + subtotalServicios);
+        }
 
-        subtotal.setText(Double.toString(this.subtotalServicios));
-        total.setText(Double.toString(this.totalpaga));
-        iva.setText("12%");
+        this.adicionalIva = subtotalServicios * TarifaIva;
+        totalpaga = subtotalServicios + adicionalIva;
+
+        subtotal.setText(Double.toString(subtotalServicios));
+        total.setText(Double.toString(totalpaga));
+        // iva.setText("12%");
         rucField.setText(this.numeroNota);
 
         String queryDB = "Insert into tb_facturaCabecera (fk_id_cliente,fk_id_tipoPago,ruc,fecha_emision,sri_Auth,iva,subtotal,total)"
@@ -859,9 +1007,9 @@ public class menuPrincipal extends javax.swing.JFrame {
             ps.setString(3, this.numeroNota);
             ps.setDate(4, fechaReservacionSql);
             ps.setString(5, this.numeroAut);
-            ps.setDouble(6, this.TarifaIva);
-            ps.setDouble(7, this.subtotalServicios);
-            ps.setDouble(8, this.totalpaga);
+            ps.setDouble(6, TarifaIva);
+            ps.setDouble(7, subtotalServicios);
+            ps.setDouble(8, totalpaga);
             ps.execute();
 
             try (ResultSet obtenerAnteriorKey = ps.getGeneratedKeys()) {
@@ -885,11 +1033,8 @@ public class menuPrincipal extends javax.swing.JFrame {
                 TbServicios obtenerServiciosByPosicion = listadoS.obtenerServiciosByPosicion(JListadoServiciosNotadeVenta.getSelectedIndices()[i]);
                 ps.setLong(1, idCabeceraNotadeVenta);
                 ps.setLong(2, obtenerServiciosByPosicion.getIdServicios());
-                this.subtotalServicios += obtenerServiciosByPosicion.getCosto_servicio();
                 ps.execute();
             }
-            JListadoServiciosNotadeVenta.clearSelection();
-            comboBoxClientesNotaVenta.setSelectedIndex(-1);
 
             Object[] options = {"OK"};
             int result = JOptionPane.showOptionDialog(null, "Nota de venta guardada exitosamente", "Proceso exitoso", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -898,6 +1043,7 @@ public class menuPrincipal extends javax.swing.JFrame {
                 tipoPago.setSelectedIndex(-1);
                 JListadoServiciosNotadeVenta.clearSelection();
                 comboBoxClientesNotaVenta.setSelectedIndex(-1);
+                this.tarifaCombo.setSelectedIndex(-1);
                 subtotal.setText("");
                 subtotal.setText("");
                 total.setText("");
@@ -911,7 +1057,69 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_guardarNotaVentaActionPerformed
 
     private void guardaclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardaclienteActionPerformed
-        // TODO add your handling code here:
+
+        String regexletras = "^[a-zA-Z\\s]{1,120}$";
+        String regexCedula = "^[0-9]{10}$";
+        String regexTelefono = "^[0-9]{10}$";
+        String regexCorreo = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,50}$";
+
+        Pattern patternText = Pattern.compile(regexletras);
+        Pattern patternced = Pattern.compile(regexCedula);
+        Pattern patterntelf = Pattern.compile(regexTelefono);
+        Pattern patterncorreo = Pattern.compile(regexCorreo);
+
+        Matcher matchernombre = patternText.matcher(nombreCompleto.getText());
+        Matcher matcherced = patternced.matcher(identificacion.getText());
+        Matcher matchertelf = patterntelf.matcher(telefono.getText());
+        Matcher matchercorreo = patterncorreo.matcher(correo.getText());
+
+        if (nombreCompleto.getText().isEmpty() && identificacion.getText().isEmpty() && correo.getText().isEmpty() && telefono.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar todos los datos", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (nombreCompleto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar el nombre completo", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (identificacion.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar la identificación", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (correo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar el correo", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (telefono.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar el teléfono", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (!matchernombre.matches()) {
+            JOptionPane.showMessageDialog(null, "El nombre puede contener hasta 120 caracteres alfabéticos y espacios", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (!matcherced.matches()) {
+            JOptionPane.showMessageDialog(null, "La cédula debe contener 10 caracteres númericos", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (!matchertelf.matches()) {
+            JOptionPane.showMessageDialog(null, "El teléfono debe contener 10 caracteres númericos", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (!matchercorreo.matches()) {
+            JOptionPane.showMessageDialog(null, "Por favor, ingrese un formato de correo válido", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }
+
+        String queryDB = "Insert into tb_cliente (primer_nombre,identificacion,correo,telefono)"
+                + "values(?,?,?,?) ";
+
+        try (Connection conn = conexionDB.obtenerConexion(); PreparedStatement ps = conn.prepareStatement(queryDB)) {
+
+            ps.setString(1, nombreCompleto.getText());
+            ps.setString(2, identificacion.getText());
+            ps.setString(3, correo.getText());
+            ps.setString(4, telefono.getText());
+
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "Cliente guardado exitosamente", "Proceso exitoso", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("Insercion de clientes exitosa");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Lo sentimos, tuvimos problemas con el proceso", "Proceso Fallido", JOptionPane.ERROR_MESSAGE);
+            System.out.println("problemas con la insercion del cliente: " + ex);
+        }
     }//GEN-LAST:event_guardaclienteActionPerformed
 
     private void cancelarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarClienteActionPerformed
@@ -923,20 +1131,165 @@ public class menuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelarClienteActionPerformed
 
     private void cancelarNotaVenta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarNotaVenta1ActionPerformed
-        // TODO add your handling code here:
+        this.panelinicial.setVisible(true);
+        this.reservas.setVisible(false);
+        this.notasDeVenta.setVisible(false);
+        this.clientes.setVisible(false);
+        this.sorteos.setVisible(false);
     }//GEN-LAST:event_cancelarNotaVenta1ActionPerformed
 
-    private void guardarNotaVenta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarNotaVenta1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_guardarNotaVenta1ActionPerformed
+    private void generarGanadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generarGanadorActionPerformed
 
-    private void guardarNotaVenta2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarNotaVenta2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_guardarNotaVenta2ActionPerformed
+        String queryDB = "SELECT idCliente, primer_nombre, identificacion, correo, telefono "
+                + "from tb_cliente";
+
+        try (Connection conn = conexionDB.obtenerConexion(); PreparedStatement ps = conn.prepareStatement(queryDB)) {
+            ResultSet rs = ps.executeQuery();
+            ArrayList<Long> clientesRandom = new ArrayList<>();
+            ArrayList<String> clientesRandomNames = new ArrayList<>();
+
+            while (rs.next()) {
+                tbClientes clientes = new tbClientes(rs.getLong(1),
+                        rs.getString(2), rs.getString(3), rs.getString(4),
+                        rs.getString(5));
+                listadoC.agregarClientes(clientes);
+                clientesRandom.add(clientes.getIdCliente());
+                clientesRandomNames.add(clientes.getPrimer_nombre());
+            }
+            int posisionSelected = (int) (Math.random() * (clientesRandom.size()));
+            ganadorField.setText(clientesRandomNames.get(posisionSelected));
+            this.valorSemilla = clientesRandom.get(posisionSelected);
+
+            System.out.println("valor semilla elegido" + clientesRandom.get(posisionSelected));
+        } catch (Exception e) {
+            System.err.println("conexion fallida: " + e);
+        }
+    }//GEN-LAST:event_generarGanadorActionPerformed
 
     private void generarRandomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generarRandomActionPerformed
-        // TODO add your handling code here:
+        Date fechaActual = new Date();
+        Date fechaSelecc = fechaex.getDate();
+        int resultadocomparacion = fechaActual.compareTo(fechaSelecc);
+
+        if (ganadorField.getText().isEmpty() && fechaSelecc == null) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar todos los datos", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (ganadorField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar el ganador", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (fechaSelecc == null) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar la fecha expiración", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (resultadocomparacion > 0) {
+            JOptionPane.showMessageDialog(null, "La fecha expiración no debe ser menor o igual que la fecha actual", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        java.util.Date fechaReservacionUtil = fechaex.getDate();
+        java.sql.Date fechaReservacionSql = new java.sql.Date(fechaReservacionUtil.getDate());
+        System.out.println("fecha seleccionada: " + fechaex.getDate());
+
+        String queryEnvio = "INSERT INTO tb_sorteos (fk_id_cliente,fecha_expiracion) values(?,?)";
+        try (Connection conne = conexionDB.obtenerConexion(); PreparedStatement ps = conne.prepareStatement(queryEnvio)) {
+            ps.setLong(1, this.valorSemilla);
+            ps.setDate(2, fechaReservacionSql);
+
+            ps.execute();
+
+            Object[] options = {"OK"};
+            int result = JOptionPane.showOptionDialog(null, "Ganador de sorteo guardado exitosamente", "Proceso exitoso", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            System.out.println("Insercion de ganador de sorteo exitoso");
+            if (result == JOptionPane.OK_OPTION) {
+                ganadorField.setText("");
+                fechaex.setDate(null);
+            }
+            System.out.println("Insercion de sorteo exitosa");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Lo sentimos, tuvimos problemas con el proceso", "Proceso Fallido", JOptionPane.ERROR_MESSAGE);
+            System.out.println("problemas con la insercion del sorteo: " + e);
+        }
     }//GEN-LAST:event_generarRandomActionPerformed
+
+    private void correoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_correoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_correoActionPerformed
+
+    private void ganadorFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ganadorFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ganadorFieldActionPerformed
+
+    private void guardaservActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardaservActionPerformed
+        String userValidation = "^[a-zA-Z0-9 ]{1,100}$";
+        String preciovalid = "^(?=.{1,8}$)(?:\\d{1,6}(?:\\.\\d{1,2})?|\\.\\d{1,2})?$";
+
+        Pattern patternserv = Pattern.compile(userValidation);
+        Pattern patterncprice = Pattern.compile(preciovalid);
+        
+        Matcher matcherserv = patternserv.matcher(servicioNamefield.getText());
+        Matcher matcherprice = patterncprice.matcher(costoServ.getText());
+
+        if (servicioNamefield.getText().isEmpty() && costoServ.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar todos los datos", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (servicioNamefield.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar el nombre del servicio", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (costoServ.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe ingresar el precio del servicio", "Ingrese los datos correctamente", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (!matcherserv.matches()) {
+            JOptionPane.showMessageDialog(null, "El nombre de servicio puede contener hasta 100 caracteres alfanuméricos", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        } else if (!matcherprice.matches()) {
+            JOptionPane.showMessageDialog(null, "Por favor, ingrese un formato de precio válido", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }
+
+        String str = costoServ.getText();
+        float costoporServ = Float.parseFloat(str);
+        String queryEnvio = "INSERT INTO tb_servicios (nombre_servicio,costo_servicio) values(?,?)";
+        try (Connection conne = conexionDB.obtenerConexion(); PreparedStatement ps = conne.prepareStatement(queryEnvio)) {
+            ps.setString(1, servicioNamefield.getText());
+            ps.setFloat(2, costoporServ);
+
+            ps.execute();
+
+            Object[] options = {"OK"};
+            int result = JOptionPane.showOptionDialog(null, "Servicio guardado exitosamente", "Proceso exitoso", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            System.out.println("Insercion de servicio de sorteo exitoso");
+            if (result == JOptionPane.OK_OPTION) {
+                servicioNamefield.setText("");
+                costoServ.setText("");
+            }
+            System.out.println("Insercion de sorteo servicio");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Lo sentimos, tuvimos problemas con el proceso", "Proceso Fallido", JOptionPane.ERROR_MESSAGE);
+            System.out.println("problemas con la insercion del servicio: " + e);
+        }
+
+
+    }//GEN-LAST:event_guardaservActionPerformed
+
+    private void cancelarservActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarservActionPerformed
+        this.panelinicial.setVisible(true);
+        this.reservas.setVisible(false);
+        this.notasDeVenta.setVisible(false);
+        this.clientes.setVisible(false);
+        this.sorteos.setVisible(false);
+        this.servicios.setVisible(false);
+    }//GEN-LAST:event_cancelarservActionPerformed
+
+    private void menuServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuServiciosActionPerformed
+        this.panelinicial.setVisible(false);
+        this.reservas.setVisible(false);
+        this.notasDeVenta.setVisible(false);
+        this.clientes.setVisible(false);
+        this.sorteos.setVisible(false);
+        this.servicios.setVisible(true);
+    }//GEN-LAST:event_menuServiciosActionPerformed
+
+    private void tarifaComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tarifaComboActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tarifaComboActionPerformed
 
     private void cargarComboClientes() {
         String queryDB = "SELECT idCliente, primer_nombre, identificacion, correo, telefono "
@@ -1032,31 +1385,36 @@ public class menuPrincipal extends javax.swing.JFrame {
     private javax.swing.JList<String> JListadoServiciosNotadeVenta;
     private javax.swing.JTextField auth;
     private javax.swing.JLabel background;
+    private javax.swing.JLabel backgroundServ;
     private javax.swing.JButton cancelarCliente;
     private javax.swing.JButton cancelarNotaVenta;
     private javax.swing.JButton cancelarNotaVenta1;
     private javax.swing.JButton cancelarReserva;
+    private javax.swing.JButton cancelarserv;
     private javax.swing.JPanel clientes;
     private javax.swing.JMenuItem clientesItem;
     private javax.swing.JMenu clientesMenu;
     private javax.swing.JComboBox<String> comboBoxClientesNotaVenta;
     private javax.swing.JComboBox<String> comboBoxClientesReserv;
+    private javax.swing.JTextField correo;
+    private javax.swing.JTextField costoServ;
     private javax.swing.JTextField fechaEmision;
     private com.toedter.calendar.JDateChooser fechaReserva;
-    private com.toedter.calendar.JDateChooser fechaReserva1;
+    private com.toedter.calendar.JDateChooser fechaex;
     private com.raven.swing.TimePicker finalHourPopUp;
     private javax.swing.JLabel fondoclientes;
     private javax.swing.JLabel fondosorteos;
+    private javax.swing.JTextField ganadorField;
+    private javax.swing.JButton generarGanador;
     private javax.swing.JButton generarRandom;
     private javax.swing.JButton guardacliente;
     private javax.swing.JButton guardarNotaVenta;
-    private javax.swing.JButton guardarNotaVenta1;
-    private javax.swing.JButton guardarNotaVenta2;
     private javax.swing.JButton guardarReserva;
+    private javax.swing.JButton guardaserv;
     private javax.swing.JTextField horaFin;
     private javax.swing.JTextField horaIni;
+    private javax.swing.JTextField identificacion;
     private com.raven.swing.TimePicker iniHourPopUp;
-    private javax.swing.JTextField iva;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -1082,17 +1440,20 @@ public class menuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JMenu menuPrinci;
+    private javax.swing.JMenuItem menuServicios;
+    private javax.swing.JTextField nombreCompleto;
     private javax.swing.JMenuItem notaDeVentaItem;
     private javax.swing.JMenu notaDeVentaMenu;
     private javax.swing.JPanel notasDeVenta;
@@ -1103,10 +1464,14 @@ public class menuPrincipal extends javax.swing.JFrame {
     private javax.swing.JTextField rucField;
     private javax.swing.JButton seleccionarHoraFinal;
     private javax.swing.JButton seleccionarHoraInicial1;
+    private javax.swing.JTextField servicioNamefield;
+    private javax.swing.JPanel servicios;
     private javax.swing.JPanel sorteos;
     private javax.swing.JMenuItem sorteosItem;
     private javax.swing.JMenu sorteosMenu;
     private javax.swing.JTextField subtotal;
+    private javax.swing.JComboBox<String> tarifaCombo;
+    private javax.swing.JTextField telefono;
     private javax.swing.JComboBox<String> tipoPago;
     private javax.swing.JTextField total;
     // End of variables declaration//GEN-END:variables

@@ -57,6 +57,7 @@ public class registrarUsuarios extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         registrarBtn = new javax.swing.JButton();
         cancelarBtn = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -66,47 +67,47 @@ public class registrarUsuarios extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Segundo apellido");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 160, -1, -1));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 220, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Segundo nombre");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 100, -1, -1));
+        jLabel4.setText("Registre su usuario para iniciar sesión en la plataforma");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 110, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Usuario");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 220, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 300, -1, -1));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Primer nombre");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, -1, -1));
-        jPanel1.add(nombre2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, 180, 30));
-        jPanel1.add(apellido1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, 180, 30));
-        jPanel1.add(apellido2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 180, 180, 30));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, -1, -1));
+        jPanel1.add(nombre2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 170, 240, 40));
+        jPanel1.add(apellido1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 240, 250, 40));
+        jPanel1.add(apellido2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 240, 240, 40));
 
         nombre1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nombre1ActionPerformed(evt);
             }
         });
-        jPanel1.add(nombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 120, 180, 30));
-        jPanel1.add(usuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 240, 180, 30));
-        jPanel1.add(clave, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 240, 180, 30));
+        jPanel1.add(nombre1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 170, 250, 40));
+        jPanel1.add(usuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 320, 250, 40));
+        jPanel1.add(clave, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 320, 240, 40));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Clave");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 220, -1, -1));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 300, -1, -1));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Primer apellido");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, -1, -1));
 
         registrarBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        registrarBtn.setForeground(new java.awt.Color(255, 51, 102));
+        registrarBtn.setForeground(new java.awt.Color(102, 0, 204));
         registrarBtn.setText("Registrar");
         registrarBtn.setToolTipText("");
         registrarBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -114,7 +115,7 @@ public class registrarUsuarios extends javax.swing.JFrame {
                 registrarBtnActionPerformed(evt);
             }
         });
-        jPanel1.add(registrarBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 110, 30));
+        jPanel1.add(registrarBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 390, 110, 30));
 
         cancelarBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cancelarBtn.setForeground(new java.awt.Color(102, 102, 102));
@@ -124,10 +125,15 @@ public class registrarUsuarios extends javax.swing.JFrame {
                 cancelarBtnActionPerformed(evt);
             }
         });
-        jPanel1.add(cancelarBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 300, 100, 30));
+        jPanel1.add(cancelarBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 390, 100, 30));
 
-        background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/registroPage.png"))); // NOI18N
-        jPanel1.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Segundo nombre");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 150, -1, -1));
+
+        background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursosVisuales/REGISTRATE.png"))); // NOI18N
+        jPanel1.add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 450));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -144,6 +150,61 @@ public class registrarUsuarios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void registrarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarBtnActionPerformed
+        String regexletras = "^[a-zA-Z\\s]{1,20}$";
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!*_])[a-zA-Z\\d!*_]{1,15}$";
+        String userValidation = "^[a-zA-Z0-9]{1,15}$";
+
+        Pattern patternText = Pattern.compile(regexletras);
+        Pattern patternPassword = Pattern.compile(passwordRegex);
+        Pattern patternUser = Pattern.compile(userValidation);
+
+        Matcher matchernombre1 = patternText.matcher(nombre1.getText());
+        Matcher matchernombre2 = patternText.matcher(nombre2.getText());
+        Matcher matcherapellido1 = patternText.matcher(apellido1.getText());
+        Matcher matcherapellido2 = patternText.matcher(apellido2.getText());
+        Matcher matcherUsuario = patternUser.matcher(usuario.getText());
+        Matcher matcherPassword = patternPassword.matcher(clave.getText());
+
+        if(nombre1.getText().isEmpty() && nombre2.getText().isEmpty() && apellido1.getText().isEmpty() && apellido2.getText().isEmpty() && usuario.getText().isEmpty() && clave.getText().isEmpty()  ){
+         JOptionPane.showMessageDialog(null, "Debe ingresar todos los datos", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if(nombre1.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Debe ingresar el primer nombre", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if(nombre2.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Debe ingresar el segundo nombre", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if(apellido1.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Debe ingresar el primer napellido", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if(apellido2.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Debe ingresar el segundo napellido", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if(usuario.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Debe ingresar el pusuario", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if(clave.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null, "Debe ingresar la clave", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if (!matchernombre1.matches()) {
+            JOptionPane.showMessageDialog(null, "El primer nombre puede contener hasta 20 caracteres alfabéticos y espacios", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if (!matchernombre2.matches()) {
+            JOptionPane.showMessageDialog(null, "El segundo nombre puede contener hasta 20 caracteres alfabéticos y espacios", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if (!matcherapellido1.matches()) {
+            JOptionPane.showMessageDialog(null, "El primer apellido puede contener hasta 20 caracteres alfabéticos y espacios", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if (!matcherapellido2.matches()) {
+            JOptionPane.showMessageDialog(null, "El segundo apellido puede contener hasta 20 caracteres alfabéticos y espacios", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if (!matcherUsuario.matches()) {
+            JOptionPane.showMessageDialog(null, "El nombre de usuario puede contener hasta 15 caracteres alfanuméricos", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }else if (!matcherPassword.matches()) {
+            JOptionPane.showMessageDialog(null, "su contraseña debe ser alfanúmerica hasta 15 caracteres con mayúsculas y minúsculas además de contener cualquira de estos caracteres: !*_", "Intentelo nuevamente", ERROR_MESSAGE);
+            return;
+        }
 
         String queryDB = "Insert into tb_registro (primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,usuario,clave)"
                 + "values (?,?,?,?,?,?);";
@@ -157,13 +218,22 @@ public class registrarUsuarios extends javax.swing.JFrame {
             ps.setString(4, apellido2.getText());
             ps.setString(5, usuario.getText());
             ps.setString(6, clave.getText());
-            
+
             ps.execute();
-             JOptionPane.showMessageDialog(null, "Usuario guardado con éxito!", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-            
-            
-        }catch (Exception ex) {
-             JOptionPane.showMessageDialog(null, "Lo sentimos tuvimos problemas al registrar", "Intentelo nuevamente", ERROR_MESSAGE);
+
+            Object[] options = {"OK"};
+            int result = JOptionPane.showOptionDialog(null, "Usuario registrado con éxito", "Proceso exitoso", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            if (result == JOptionPane.OK_OPTION) {
+                nombre1.setText("");
+                nombre2.setText("");
+                apellido1.setText("");
+                apellido2.setText("");
+                usuario.setText("");
+                clave.setText("");
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Lo sentimos tuvimos problemas al registrar", "Intentelo nuevamente", ERROR_MESSAGE);
         }
     }//GEN-LAST:event_registrarBtnActionPerformed
 
@@ -172,7 +242,7 @@ public class registrarUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_nombre1ActionPerformed
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
-       this.dispose();
+        this.dispose();
     }//GEN-LAST:event_cancelarBtnActionPerformed
 
     /**
@@ -222,6 +292,7 @@ public class registrarUsuarios extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField nombre1;
     private javax.swing.JTextField nombre2;

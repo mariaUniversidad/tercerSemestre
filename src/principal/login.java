@@ -127,7 +127,7 @@ public class login extends javax.swing.JFrame {
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
         // TODO add your handling code here:
         System.out.println("Datos de acceso: " + txtUser.getText());
-        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!*_])[a-zA-Z\\d!*_]+$";
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!*_])[a-zA-Z\\d!*_]{1,15}$";
         Pattern pattern = Pattern.compile(passwordRegex);
         Matcher matcher = pattern.matcher(String.valueOf(txtPassword.getPassword()));
         //validaciones de formulario
@@ -145,7 +145,7 @@ public class login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe ingresar el campo usuario", "Intentelo nuevamente", ERROR_MESSAGE);
             return;
         } else if (!matcher.matches()) {
-            JOptionPane.showMessageDialog(null, "su contraseña debe ser alfanúmerica con mayúsculas y minúsculas además de contener cualquira de estos caracteres: !*_", "Intentelo nuevamente", ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "su contraseña debe ser alfanúmerica hasta 15 caracteres con mayúsculas y minúsculas además de contener cualquira de estos caracteres: !*_", "Intentelo nuevamente", ERROR_MESSAGE);
             return;
         }
         //fin validaciones formulario
